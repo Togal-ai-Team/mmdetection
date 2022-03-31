@@ -1,16 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import base64
-import os
-
 import mmcv
+import os
 import torch
 from ts.torch_handler.base_handler import BaseHandler
 
-from mmdet.apis import inference_detector, init_detector
+from mmdet.apis import inference_detector, init_detector, slided_inference_detector
 
 
 class MMdetHandler(BaseHandler):
     threshold = 0.5
+    SLIDED_INFERENCE_THRESHOLD = 40_000_000
 
     def initialize(self, context):
         properties = context.system_properties
@@ -41,7 +41,22 @@ class MMdetHandler(BaseHandler):
         return images
 
     def inference(self, data, *args, **kwargs):
-        results = inference_detector(self.model, data)
+
+        if len(data) > 1:
+            results = inference_detector(self.model, data)
+        elif len(data) == 1:
+            # handle large-scale drawings with slided inference.
+            img_w = data[0].shape[0]
+            img_h = data[0].shape[1]
+            # large drawings
+            if img_w * img_h > SLIDED_INFERENCE_THRESHOLD:
+                results = slided_inference_detector(self.model,
+                                                    data,
+                                                    slide_size=(1792, 1792),
+                                                    chip_size=(2048, 2048))
+            # small drawings
+            else:
+                results = inference_detector(self.model, data)
         return results
 
     def postprocess(self, data):

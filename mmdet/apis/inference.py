@@ -156,7 +156,7 @@ def inference_detector(model, imgs):
         return results
 
 
-def inference_detector_patched(model, img_path, slide_size, chip_size):
+def slided_inference_detector(model, img_path, slide_size, chip_size):
     """Slided inference for large-scale images. Wraps around inference_detector.
 
     Args:
