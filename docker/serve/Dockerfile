@@ -29,19 +29,21 @@ RUN pip install torchserve torch-model-archiver
 ARG PYTORCH
 ARG CUDA
 RUN ["/bin/bash", "-c", "pip install mmcv-full==${MMCV} -f https://download.openmmlab.com/mmcv/dist/cu${CUDA//./}/torch${PYTORCH}/index.html"]
-RUN pip install mmdet==${MMDET}
+COPY mmdetection mmdetection
+RUN pip install -e mmdetection
 
 RUN useradd -m model-server \
     && mkdir -p /home/model-server/tmp
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY mmdetection/docker/serve/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/entrypoint.sh \
     && chown -R model-server /home/model-server
 
-COPY config.properties /home/model-server/config.properties
+COPY mmdetection/docker/serve/config.properties /home/model-server/config.properties
 RUN mkdir /home/model-server/model-store && chown -R model-server /home/model-server/model-store
-COPY latest_deploy.mar /home/model-server/model-store
+COPY mmdetection/docker/serve/ml_objects_scale.mar /home/model-server/model-store
+
 EXPOSE 8080 8081 8082
 
 USER model-server
