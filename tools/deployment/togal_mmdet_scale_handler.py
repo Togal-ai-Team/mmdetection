@@ -16,28 +16,28 @@ from mmdet.apis import inference_detector, init_detector, slided_inference_detec
 MEAN_DOOR_SIZE = 40.82 # found out by averaging over all gt doors
 
 def cluster_dimensions(result_bboxes):
+    ss = StandardScaler()
     boxes = [box['bbox'] for box in result_bboxes]
     bbox_dims_x = boxes[:, 2] - boxes[:, 0]
     bbox_dims_y = boxes[:, 3] - boxes[:, 1]
     X = np.vstack([bbox_dims_x, bbox_dims_y]).reshape((len(bbox_dims_x), 2))
-
+    X_scaled = ss.fit_transform(X)
     # #############################################################################
     # Compute DBSCAN
-    db = DBSCAN(eps=5, min_samples=5).fit(X)
+    db = DBSCAN(eps=0.9, min_samples=2).fit(X_scaled)
     core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
     core_samples_mask[db.core_sample_indices_] = True
     labels = db.labels_
-    print(labels)
-    # Number of clusters in labels, ignoring noise if present.
-    n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-    n_noise_ = list(labels).count(-1)
 
     cluster_labels = np.delete(labels, np.where(labels == -1))
-    cluster_means = []
+    cluster_means_scaled = []
 
     for cluster_idx in np.unique(cluster_labels):
-        cluster_means.append(np.mean(X[np.where(labels == cluster_idx)[0]], axis=0))
+        cluster_means_scaled.append(np.mean(X_scaled[np.where(labels == cluster_idx)[0]], axis=0))
+
+    cluster_means = ss.inverse_transform(cluster_means_scaled)
     cluster_means = np.array(cluster_means)
+
     print("Cluster means: ", cluster_means)
     # aggregate like a madman
     return cluster_means
