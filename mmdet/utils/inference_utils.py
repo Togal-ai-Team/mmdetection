@@ -1,3 +1,5 @@
+import numpy as np
+
 def delete_border_detections(chip_detections, chip_w, border_delete_amount):
     """Deletes detections near borders. This is to make merging of several slided inference patches easier.
     The function is implemented vectorized and is therefore lightning fast.
