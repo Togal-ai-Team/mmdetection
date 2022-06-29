@@ -117,8 +117,7 @@ class MMdetHandler(BaseHandler):
                             'bbox': bbox_coords,
                             'score': score
                         })
-        print(output)
-        print(self.model.CLASSES)
-        dimension_clusters = cluster_dimensions(output)
+
+        dimension_clusters = cluster_dimensions(output[0])
 
         return {'cluster_means': dimension_clusters, 'scale_factor': np.mean(dimension_clusters) / MEAN_DOOR_SIZE}
