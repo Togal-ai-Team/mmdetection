@@ -84,7 +84,7 @@ class MMdetHandler(BaseHandler):
             img_w = data[0].shape[0]
             img_h = data[0].shape[1]
             # large drawings
-            if img_w * img_h > SLIDED_INFERENCE_THRESHOLD:
+            if img_w * img_h > self.SLIDED_INFERENCE_THRESHOLD:
                 results = slided_inference_detector(self.model,
                                                     data,
                                                     slide_size=(1792, 1792),
