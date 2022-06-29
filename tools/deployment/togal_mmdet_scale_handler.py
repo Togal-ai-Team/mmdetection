@@ -44,7 +44,7 @@ def cluster_dimensions(result_bboxes):
 
 
 class MMdetHandler(BaseHandler):
-    threshold = 0.5
+    threshold = 0.3
     SLIDED_INFERENCE_THRESHOLD = 40_000_000
 
     def initialize(self, context):
@@ -117,6 +117,8 @@ class MMdetHandler(BaseHandler):
                             'bbox': bbox_coords,
                             'score': score
                         })
+        print(output)
+        print(self.model.CLASSES)
         dimension_clusters = cluster_dimensions(output)
 
         return {'cluster_means': dimension_clusters, 'scale_factor': np.mean(dimension_clusters) / MEAN_DOOR_SIZE}
