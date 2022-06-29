@@ -23,7 +23,7 @@ ENV PATH="/opt/conda/bin:$PATH"
 RUN export FORCE_CUDA=1
 
 # TORCHSEVER
-RUN pip install torchserve torch-model-archiver nvgpu
+RUN pip install torchserve torch-model-archiver nvgpu sklearn numpy
 
 # MMLAB
 ARG PYTORCH
