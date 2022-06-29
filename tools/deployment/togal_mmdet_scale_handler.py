@@ -17,7 +17,7 @@ MEAN_DOOR_SIZE = 40.82 # found out by averaging over all gt doors
 
 def cluster_dimensions(result_bboxes):
     ss = StandardScaler()
-    boxes = [box['bbox'] for box in result_bboxes]
+    boxes = np.array([box['bbox'] for box in result_bboxes])
     bbox_dims_x = boxes[:, 2] - boxes[:, 0]
     bbox_dims_y = boxes[:, 3] - boxes[:, 1]
     X = np.vstack([bbox_dims_x, bbox_dims_y]).reshape((len(bbox_dims_x), 2))
