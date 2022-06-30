@@ -211,6 +211,7 @@ def slided_inference_detector(model, img_path, slide_size, chip_size):
         else:
             filtered_bboxes_class = np.concatenate((picked_boxes, picked_score), axis=1)
             filtered_detections.append(filtered_bboxes_class)
+    print(filtered_detections)
     return filtered_detections
 
 
