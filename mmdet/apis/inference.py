@@ -160,7 +160,7 @@ def inference_detector(model, imgs):
         return results
 
 
-def slided_inference_detector(model, img_path, slide_size, chip_size):
+def slided_inference_detector(model, img, slide_size, chip_size):
     """Slided inference for large-scale images. Wraps around inference_detector.
 
     Args:
@@ -172,8 +172,7 @@ def slided_inference_detector(model, img_path, slide_size, chip_size):
     """
     classnames = ['Toilet', 'Sink', 'Shower', 'Bathtub', 'Parking Lot', 'Dryer',
                   'Single Swing Door', 'Double Swing Door', 'Sliding Door']
-    classnames = ['Single Swing Door']
-    img = mmcv.imread(img_path)
+
     height, width, channel = img.shape
     slide_h, slide_w = slide_size
     chip_h, chip_w = chip_size
