@@ -3,9 +3,6 @@ ARG CUDA="11.3"
 ARG CUDNN="8"
 FROM pytorch/pytorch:${PYTORCH}-cuda${CUDA}-cudnn${CUDNN}-devel
 
-ARG MMCV="1.4.3"
-ARG MMDET="2.20.0"
-
 ENV PYTHONUNBUFFERED TRUE
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
@@ -23,12 +20,13 @@ ENV PATH="/opt/conda/bin:$PATH"
 RUN export FORCE_CUDA=1
 
 # TORCHSEVER
-RUN pip install torchserve torch-model-archiver nvgpu sklearn numpy
+RUN pip install torchserve torch-model-archiver nvgpu sklearn numpy openmim
 
 # MMLAB
 ARG PYTORCH
 ARG CUDA
-RUN ["/bin/bash", "-c", "pip install mmcv-full==${MMCV} -f https://download.openmmlab.com/mmcv/dist/cu${CUDA//./}/torch${PYTORCH}/index.html"]
+
+RUN ["/bin/bash", "-c", "mim install mmcv-full"]
 COPY mmdetection mmdetection
 RUN pip install -e mmdetection
 
