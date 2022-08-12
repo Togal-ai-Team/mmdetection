@@ -172,8 +172,7 @@ def slided_inference_detector(model, img, slide_size, chip_size):
     """
     classnames = ['Toilet', 'Sink', 'Shower', 'Bathtub', 'Parking Lot', 'Dryer',
                   'Single Swing Door', 'Double Swing Door', 'Sliding Door']
-    print(len(img))
-    print(type(img[0]))
+
     img = img[0]
     height, width, channel = img.shape
     slide_h, slide_w = slide_size
