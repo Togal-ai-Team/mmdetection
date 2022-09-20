@@ -30,9 +30,9 @@ class MMdetHandler(BaseHandler):
 
     def preprocess(self, data):
         images = []
-
         for row in data:
             image = row.get('data') or row.get('body')
+            
             if isinstance(image, str):
                 image = base64.b64decode(image)
             image = mmcv.imfrombytes(image)
@@ -54,6 +54,7 @@ class MMdetHandler(BaseHandler):
                                                     data,
                                                     slide_size=(1792, 1792),
                                                     chip_size=(2048, 2048))
+                results = [results]
             # small drawings
             else:
                 results = inference_detector(self.model, data)

@@ -1,10 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import base64
 import mmcv
 import os
 import torch
 import numpy as np
+import requests
+import tempfile
+import cv2
 
+from PIL import Image
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
 from sklearn.datasets import make_blobs
@@ -67,10 +70,12 @@ class MMdetHandler(BaseHandler):
         images = []
 
         for row in data:
-            image = row.get('data') or row.get('body')
-            if isinstance(image, str):
-                image = base64.b64decode(image)
-            image = mmcv.imfrombytes(image)
+            url = row.get('data') or row.get('body')
+            if isinstance(url, (bytes, bytearray)):
+                url = url.decode("utf-8")
+            image = Image.open(requests.get(url, stream=True).raw)
+            image = np.array(image)
+
             images.append(image)
 
         return images
@@ -83,17 +88,23 @@ class MMdetHandler(BaseHandler):
             # handle large-scale drawings with slided inference.
             img_w = data[0].shape[0]
             img_h = data[0].shape[1]
-            # large drawings
-            if img_w * img_h > self.SLIDED_INFERENCE_THRESHOLD:
-                results = slided_inference_detector(self.model,
-                                                    data[0],
+            # large drawingsi
+            # temporarily save the down-sized image
+            with tempfile.NamedTemporaryFile(suffix='.png') as fp:
+                img_path_temp = fp.name
+
+                cv2.imwrite(img_path_temp, data[0])
+
+                if img_w * img_h > self.SLIDED_INFERENCE_THRESHOLD:
+                    results = slided_inference_detector(self.model,
+                                                    img_path_temp,
                                                     slide_size=(1792, 1792),
                                                     chip_size=(2048, 2048))
-                # NOTE: HACK
-                results = [results]
-            # small drawings
-            else:
-                results = inference_detector(self.model, data)
+                    results = [results]
+                # small drawings
+                else:
+                    results = inference_detector(self.model, img_path_temp)
+                    results = [results]
         return results
 
     def postprocess(self, data):
