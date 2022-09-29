@@ -170,9 +170,9 @@ def slided_inference_detector(model, img, slide_size, chip_size):
     Returns:
         Awaitable detection results.
     """
-    classnames = ['Toilet', 'Sink', 'Shower', 'Bathtub', 'Parking Lot', 'Dryer',
-                  'Single Swing Door', 'Double Swing Door', 'Sliding Door']
-
+    #classnames = ['Toilet', 'Sink', 'Shower', 'Bathtub', 'Parking Lot', 'Dryer',
+    #              'Single Swing Door', 'Double Swing Door', 'Sliding Door']
+    classnames = ["Toilet", "Sink", "Shower", "Bathtub", "Parking Lot", "Dryer", "Single Swing Door", "Double Swing Door", "Sliding Door", "Double Bed", "Sofa Single", "Small table", "Chair", "Dining table", "Cooktop", "Urinals", "Sofa Multi", "Office Chair", "Office Desk", "Living Table", "Tv/Monitor", "Single Bed", "Gym Equipment", "Office Table", "Water Fountains"]
     img = img[0]
     height, width, channel = img.shape
     slide_h, slide_w = slide_size
