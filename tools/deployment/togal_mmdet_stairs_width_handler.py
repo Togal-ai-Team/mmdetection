@@ -13,8 +13,6 @@ from ts.torch_handler.base_handler import BaseHandler
 
 from mmdet.apis import inference_detector, init_detector, slided_inference_detector
 
-MEAN_DOOR_SIZE = 40.82 # found out by averaging over all gt doors
-
 def is_walking_direction_horizonal(staircase_patch):
     """
     Helper function to determine the walking direction, given a patch of a staircase and boxes
@@ -111,7 +109,7 @@ class MMdetHandler(BaseHandler):
                 stairs_patch = self.image[int(staircase[1]):int(staircase[3]),
                                           int(staircase[0]): int(staircase[2]),
                                           0]
-                staircase_is_horizontal = detect_walking_direction(stairs_patch)
+                staircase_is_horizontal = is_walking_direction_horizonal(stairs_patch)
 
                 bbox_coords = bbox[:-1].tolist()
                 score = float(bbox[-1])
