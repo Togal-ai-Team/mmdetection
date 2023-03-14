@@ -26,7 +26,7 @@ RUN pip install torchserve torch-model-archiver nvgpu sklearn numpy openmim open
 ARG PYTORCH
 ARG CUDA
 
-RUN ["/bin/bash", "-c", "mim install mmcv-full"]
+RUN ["/bin/bash", "-c", "mim install mmcv-full==1.7.0"]
 COPY mmdetection mmdetection
 RUN pip install -e mmdetection
 
