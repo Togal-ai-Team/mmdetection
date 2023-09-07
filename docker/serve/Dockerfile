@@ -6,6 +6,8 @@ FROM pytorch/pytorch:${PYTORCH}-cuda${CUDA}-cudnn${CUDNN}-devel
 ARG MMCV="1.3.17"
 ARG MMDET="2.28.2"
 
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
 ENV PYTHONUNBUFFERED TRUE
 
 RUN apt-get update && \
@@ -21,7 +23,7 @@ ENV PATH="/opt/conda/bin:$PATH"
 RUN export FORCE_CUDA=1
 
 # TORCHSEVER
-RUN pip install torchserve torch-model-archiver
+RUN pip install torchserve torch-model-archiver nvgpu scikit-learn numpy openmim opencv-python pynvml==11.4.1 six==1.16.0
 
 # MMLAB
 ARG PYTORCH
