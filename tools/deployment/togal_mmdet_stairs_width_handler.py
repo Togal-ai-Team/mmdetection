@@ -4,6 +4,7 @@ import mmcv
 import os
 import torch
 import numpy as np
+import cv2
 
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
@@ -12,6 +13,8 @@ from sklearn.preprocessing import StandardScaler
 from ts.torch_handler.base_handler import BaseHandler
 
 from mmdet.apis import inference_detector, init_detector, slided_inference_detector
+
+MEAN_DOOR_SIZE = 40.82 # found out by averaging over all gt doors
 
 def is_walking_direction_horizonal(staircase_patch):
     """
@@ -25,7 +28,7 @@ def is_walking_direction_horizonal(staircase_patch):
     stairs_count_x = np.mean(np.sum(diff_stairs_x, axis=1))
     stairs_count_y = np.mean(np.sum(diff_stairs_y, axis=0))
 
-    return stairs_count_y < stairs_count_x
+    return stairs_count_y > stairs_count_x
 
 def width_line_from_box(box, is_horizontal):
     """
@@ -106,14 +109,14 @@ class MMdetHandler(BaseHandler):
                 bbox_result, segm_result = image_result, None
 
             for staircase in bbox_result[0]: # index 0 because only 1 class.
-                stairs_patch = self.image[int(staircase[1]):int(staircase[3]),
+                stairs_patch = self.image[int(staircase[1]): int(staircase[3]),
                                           int(staircase[0]): int(staircase[2]),
                                           0]
                 staircase_is_horizontal = is_walking_direction_horizonal(stairs_patch)
 
-                bbox_coords = bbox[:-1].tolist()
-                score = float(bbox[-1])
-                width_line = width_line_from_box(bbox, staircase_is_horizontal)
+                bbox_coords = staircase[:-1].tolist()
+                score = float(staircase[-1])
+                width_line = width_line_from_box(bbox_coords, staircase_is_horizontal)
 
                 if score >= self.threshold:
                     output[image_index].append({
@@ -121,5 +124,4 @@ class MMdetHandler(BaseHandler):
                         'width_line': width_line,
                         'score': score
                     })
-
         return output
