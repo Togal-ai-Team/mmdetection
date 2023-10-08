@@ -20,7 +20,7 @@ from mmdet.utils import ConfigType
 from ..evaluation import get_classes
 from ..registry import MODELS
 from ..structures import DetDataSample, SampleList
-from ..utils import get_test_pipeline_cfg
+from ..utils import get_test_pipeline_cfg, pred_to_array
 
 
 def init_detector(
@@ -225,7 +225,7 @@ def slided_inference_detector(model, img, slide_size, chip_size):
             subimg[:chip.shape[0], :chip.shape[1], :] = chip
 
             chip_detections = inference_detector(model, subimg)
-
+            chip_detections = pred_to_array(chip_detections)
             # now delete detections in a bit more than half of the overlap area
             border_delete_amount = int((chip_w - slide_w) / 2 - 20)
             chip_detections = delete_border_detections(chip_detections, chip_w, border_delete_amount)

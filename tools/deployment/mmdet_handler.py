@@ -42,31 +42,44 @@ class MMdetHandler(BaseHandler):
         return images
 
     def inference(self, data, *args, **kwargs):
-        results = inference_detector(self.model, data)
+        if len(data) > 1:
+            results = inference_detector(self.model, data)
+        elif len(data) == 1:
+            # handle large-scale drawings with slided inference.
+            img_w = data[0].shape[0]
+            img_h = data[0].shape[1]
+            # large drawings
+            if img_w * img_h > self.SLIDED_INFERENCE_THRESHOLD:
+                results = slided_inference_detector(self.model,
+                                                    data,
+                                                    slide_size=(1792, 1792),
+                                                    chip_size=(2048, 2048))
+                results = [results]
+            # small drawings
+            else:
+                results = inference_detector(self.model, data)
         return results
 
     def postprocess(self, data):
-        # Format output following the example ObjectDetectionHandler format
+
         output = []
-        for data_sample in data:
-            pred_instances = data_sample.pred_instances
-            bboxes = pred_instances.bboxes.cpu().numpy().astype(
-                np.float32).tolist()
-            labels = pred_instances.labels.cpu().numpy().astype(
-                np.int32).tolist()
-            scores = pred_instances.scores.cpu().numpy().astype(
-                np.float32).tolist()
-            preds = []
-            for idx in range(len(labels)):
-                cls_score, bbox, cls_label = scores[idx], bboxes[idx], labels[
-                    idx]
-                if cls_score >= self.threshold:
-                    class_name = self.model.dataset_meta['classes'][cls_label]
-                    result = dict(
-                        class_label=cls_label,
-                        class_name=class_name,
-                        bbox=bbox,
-                        score=cls_score)
-                    preds.append(result)
-            output.append(preds)
+        for image_index, image_result in enumerate(data):
+            output.append([])
+            if isinstance(image_result, tuple):
+                bbox_result, segm_result = image_result
+            else:
+                bbox_result, segm_result = image_result, None
+
+            for class_index, class_result in enumerate(bbox_result):
+                class_name = self.model.CLASSES[class_index]
+                for bbox in class_result:
+                    bbox_coords = bbox[:-1].tolist()
+                    score = float(bbox[-1])
+                    if score >= self.threshold:
+                        output[image_index].append({
+                            'class_name': class_name,
+                            'bbox': bbox_coords,
+                            'score': score
+                        })
+
         return output
