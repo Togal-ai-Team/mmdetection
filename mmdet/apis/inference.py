@@ -196,6 +196,63 @@ def inference_detector(
         return result_list
 
 
+def slided_inference_detector(model, img, slide_size, chip_size):
+    """Slided inference for large-scale images. Wraps around inference_detector.
+
+    Args:
+        model (nn.Module): The loaded detector.
+        img (str | ndarray): Either image files or loaded images.
+
+    Returns:
+        Awaitable detection results.
+    """
+    num_classes = 26
+
+    img = img[0]
+    height, width, channel = img.shape
+    slide_h, slide_w = slide_size
+    chip_h, chip_w = chip_size
+
+    unfiltered_detections = [np.zeros((0, 5)) for _ in range(num_classes)]
+
+    num_patches_w = int(width / slide_w + 1)
+    num_patches_h = int(height / slide_h) + 1
+    for i in range(num_patches_w):
+        for j in range(num_patches_h):
+            subimg = np.zeros((chip_h, chip_w, channel))
+
+            chip = img[j * slide_h:j * slide_h + chip_h, i * slide_w:i * slide_w + chip_w, :3]
+            subimg[:chip.shape[0], :chip.shape[1], :] = chip
+
+            chip_detections = inference_detector(model, subimg)
+
+            # now delete detections in a bit more than half of the overlap area
+            border_delete_amount = int((chip_w - slide_w) / 2 - 20)
+            chip_detections = delete_border_detections(chip_detections, chip_w, border_delete_amount)
+
+            for cls_id in range(num_classes):
+                chip_detections[cls_id][:, :4][:, ::2] = chip_detections[cls_id][:, :4][:, ::2] + i * slide_w
+                chip_detections[cls_id][:, :4][:, 1::2] = chip_detections[cls_id][:, :4][:, 1::2] + j * slide_h
+
+                unfiltered_detections[cls_id] = np.concatenate((unfiltered_detections[cls_id], chip_detections[cls_id]))
+
+    # nms. this is NOT optional because detections from all patches are merged without any logic, thus there will
+    #      be many duplicates.
+
+    filtered_detections = []
+    for bboxes_class in unfiltered_detections:
+        picked_boxes, picked_score = nms(bboxes_class[:, :4], bboxes_class[:, 4], 0.1)
+        picked_boxes = np.array(picked_boxes)
+        picked_score = np.expand_dims(np.array(picked_score), -1)
+        # if all boxes have been removed, add an empty array
+        if picked_boxes.shape[0] == 0:
+            filtered_detections.append(np.zeros((0, 5)))
+        else:
+            filtered_bboxes_class = np.concatenate((picked_boxes, picked_score), axis=1)
+            filtered_detections.append(filtered_bboxes_class)
+
+    return filtered_detections
+
 # TODO: Awaiting refactoring
 async def async_inference_detector(model, imgs):
     """Async inference image(s) with the detector.

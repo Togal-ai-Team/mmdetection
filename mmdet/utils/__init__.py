@@ -4,6 +4,7 @@ from .compat_config import compat_cfg
 from .dist_utils import (all_reduce_dict, allreduce_grads, reduce_mean,
                          sync_random_seed)
 from .logger import get_caller_name, log_img_scale
+from .inference_utils import nms, delete_border_detections
 from .memory import AvoidCUDAOOM, AvoidOOM
 from .misc import (find_latest_checkpoint, get_test_pipeline_cfg,
                    update_data_root)
@@ -23,6 +24,6 @@ __all__ = [
     'AvoidCUDAOOM', 'all_reduce_dict', 'allreduce_grads', 'reduce_mean',
     'sync_random_seed', 'ConfigType', 'InstanceList', 'MultiConfig',
     'OptConfigType', 'OptInstanceList', 'OptMultiConfig', 'OptPixelList',
-    'PixelList', 'RangeType', 'get_test_pipeline_cfg',
+    'PixelList', 'RangeType', 'get_test_pipeline_cfg', 'nms', 'delete_border_detections',
     'setup_cache_size_limit_of_dynamo', 'imshow_mot_errors'
 ]

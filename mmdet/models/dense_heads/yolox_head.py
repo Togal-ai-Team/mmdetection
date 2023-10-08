@@ -389,7 +389,7 @@ class YOLOXHead(BaseDenseHead):
                 img_meta['scale_factor']).repeat((1, 2))
 
         if with_nms and results.bboxes.numel() > 0:
-            det_bboxes, keep_idxs = batched_nms(results.bboxes, results.scores,
+            det_bboxes, keep_idxs = batched_nms(results.bboxes.float(), results.scores.float(),
                                                 results.labels, cfg.nms)
             results = results[keep_idxs]
             # some nms would reweight the score, such as softnms
