@@ -50,7 +50,7 @@ COPY mmdetection/docker/serve/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh \
     && chown -R model-server /home/model-server
 
-COPY config.properties /home/model-server/config.properties
+COPY mmdetection/docker/serve/config.properties /home/model-server/config.properties
 RUN mkdir /home/model-server/model-store && chown -R model-server /home/model-server/model-store
 COPY mmdetection/docker/serve/ml_objects_oct23.mar /home/model-server/model-store
 

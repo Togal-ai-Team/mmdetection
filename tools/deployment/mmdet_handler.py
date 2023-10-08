@@ -8,10 +8,12 @@ import torch
 from ts.torch_handler.base_handler import BaseHandler
 
 from mmdet.apis import inference_detector, init_detector
-
+from mmdet.inference_utils import pred_to_array
 
 class MMdetHandler(BaseHandler):
     threshold = 0.5
+    SLIDED_INFERENCE_THRESHOLD = 40_000_000
+    sliding_door_threshold = 0.25
 
     def initialize(self, context):
         properties = context.system_properties
@@ -61,8 +63,8 @@ class MMdetHandler(BaseHandler):
         return results
 
     def postprocess(self, data):
-
         output = []
+
         for image_index, image_result in enumerate(data):
             output.append([])
             if isinstance(image_result, tuple):
@@ -75,7 +77,11 @@ class MMdetHandler(BaseHandler):
                 for bbox in class_result:
                     bbox_coords = bbox[:-1].tolist()
                     score = float(bbox[-1])
-                    if score >= self.threshold:
+
+                    # Determine which threshold to use based on the class name
+                    current_threshold = self.sliding_door_threshold if class_name == "Sliding Door" else self.threshold
+
+                    if score >= current_threshold:
                         output[image_index].append({
                             'class_name': class_name,
                             'bbox': bbox_coords,

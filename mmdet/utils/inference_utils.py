@@ -1,5 +1,34 @@
 import numpy as np
 
+def pred_to_array(pred_instances, num_classes=26):
+    if isinstance(pred_instances, list):
+        pred_instances = pred_instances[0]
+    # Move tensors from GPU to CPU and convert to lists
+    bboxes = pred_instances.pred_instances.bboxes.cpu().tolist()
+    scores = pred_instances.pred_instances.scores.cpu().tolist()
+    labels = pred_instances.pred_instances.labels.cpu().tolist()
+
+    # Initialize an empty list for each of the num_classes classes
+    old_format = [[] for _ in range(num_classes)]
+
+    # Populate the old_format list
+    for bbox, score, label in zip(bboxes, scores, labels):
+        # Construct the (xmin, ymin, xmax, ymax, confidence) tuple
+        entry = bbox + [score]
+
+        # Append this entry to the appropriate class array
+        old_format[label].append(entry)
+
+    # Convert each class list to a tensor
+    for i in range(26):
+        if old_format[i]:
+            old_format[i] = torch.tensor(old_format[i])
+        else:
+            # Handle the case where there are no detections for a class
+            old_format[i] = torch.empty((0, 5))
+
+    return old_format
+
 def delete_border_detections(chip_detections, chip_w, border_delete_amount):
     """Deletes detections near borders. This is to make merging of several slided inference patches easier.
     The function is implemented vectorized and is therefore lightning fast.
