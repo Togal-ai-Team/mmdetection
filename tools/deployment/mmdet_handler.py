@@ -8,7 +8,7 @@ import torch
 from ts.torch_handler.base_handler import BaseHandler
 
 from mmdet.apis import inference_detector, init_detector
-from mmdet.inference_utils import pred_to_array
+from mmdet.utils import pred_to_array
 
 class MMdetHandler(BaseHandler):
     threshold = 0.5

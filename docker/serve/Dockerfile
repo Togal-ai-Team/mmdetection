@@ -40,7 +40,8 @@ ARG PYTORCH
 ARG CUDA
 RUN pip install mmengine
 RUN ["/bin/bash", "-c", "pip install mmcv==${MMCV} -f https://download.openmmlab.com/mmcv/dist/cu${CUDA//./}/torch${PYTORCH}/index.html"]
-RUN pip install mmdet==${MMDET}
+COPY mmdetection mmdetection
+RUN pip install -e mmdetection
 
 RUN useradd -m model-server \
     && mkdir -p /home/model-server/tmp
