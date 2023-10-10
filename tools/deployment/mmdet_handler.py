@@ -7,7 +7,7 @@ import numpy as np
 import torch
 from ts.torch_handler.base_handler import BaseHandler
 
-from mmdet.apis import inference_detector, init_detector
+from mmdet.apis import inference_detector, init_detector, slided_inference_detector
 from mmdet.utils import pred_to_array
 
 class MMdetHandler(BaseHandler):
@@ -63,6 +63,7 @@ class MMdetHandler(BaseHandler):
             else:
                 results = inference_detector(self.model, data)
                 results = pred_to_array(results)
+        print(results)
         return results
 
     def postprocess(self, data):
