@@ -21,12 +21,12 @@ def pred_to_array(pred_instances, num_classes=26):
         old_format[label].append(entry)
 
     # Convert each class list to a tensor
-    for i in range(26):
+    for i in range(num_classes):
         if old_format[i]:
-            old_format[i] = torch.tensor(old_format[i])
+            old_format[i] = np.array(old_format[i])
         else:
             # Handle the case where there are no detections for a class
-            old_format[i] = torch.empty((0, 5))
+            old_format[i] = np.empty((0, 5))
 
     return old_format
 

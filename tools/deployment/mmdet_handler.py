@@ -29,7 +29,7 @@ class MMdetHandler(BaseHandler):
         self.config_file = os.path.join(model_dir, 'config.py')
 
         self.model = init_detector(self.config_file, checkpoint, self.device)
-        self.model.half()
+        #self.model.half()
 
         self.initialized = True
 
