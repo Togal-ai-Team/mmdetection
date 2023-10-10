@@ -29,7 +29,6 @@ class MMdetHandler(BaseHandler):
         self.config_file = os.path.join(model_dir, 'config.py')
 
         self.model = init_detector(self.config_file, checkpoint, self.device)
-        self.model.half()
 
         self.initialized = True
 
@@ -41,6 +40,7 @@ class MMdetHandler(BaseHandler):
             if isinstance(image, str):
                 image = base64.b64decode(image)
             image = mmcv.imfrombytes(image)
+            print(image.shape)
             images.append(image)
 
         return images
@@ -58,10 +58,13 @@ class MMdetHandler(BaseHandler):
                                                     data,
                                                     slide_size=(1792, 1792),
                                                     chip_size=(2048, 2048))
+
                 results = [results]
+                print(results)
             # small drawings
             else:
                 results = inference_detector(self.model, data)
+                print(results)
                 results = pred_to_array(results)
         print(results)
         return results
@@ -77,7 +80,7 @@ class MMdetHandler(BaseHandler):
                 bbox_result, segm_result = image_result, None
 
             for class_index, class_result in enumerate(bbox_result):
-                class_name = self.model.CLASSES[class_index]
+                class_name = self.model.dataset_meta['classes']
                 for bbox in class_result:
                     bbox_coords = bbox[:-1].tolist()
                     score = float(bbox[-1])

@@ -91,7 +91,6 @@ class BaseDetector(BaseModel, metaclass=ABCMeta):
         if mode == 'loss':
             return self.loss(inputs, data_samples)
         elif mode == 'predict':
-            inputs = inputs.half()
             return self.predict(inputs, data_samples)
         elif mode == 'tensor':
             return self._forward(inputs, data_samples)
