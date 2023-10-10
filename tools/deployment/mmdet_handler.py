@@ -13,7 +13,7 @@ from mmdet.utils import pred_to_array
 class MMdetHandler(BaseHandler):
     threshold = 0.5
     SLIDED_INFERENCE_THRESHOLD = 40_000_000
-    sliding_door_threshold = 0.25
+    sliding_door_threshold = 0.3
 
     def initialize(self, context):
         properties = context.system_properties
@@ -29,6 +29,8 @@ class MMdetHandler(BaseHandler):
         self.config_file = os.path.join(model_dir, 'config.py')
 
         self.model = init_detector(self.config_file, checkpoint, self.device)
+        self.model.half()
+
         self.initialized = True
 
     def preprocess(self, data):
