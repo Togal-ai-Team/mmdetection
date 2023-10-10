@@ -62,6 +62,7 @@ class MMdetHandler(BaseHandler):
             # small drawings
             else:
                 results = inference_detector(self.model, data)
+                results = pred_to_array(results)
         return results
 
     def postprocess(self, data):

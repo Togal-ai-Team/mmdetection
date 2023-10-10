@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 def pred_to_array(pred_instances, num_classes=26):
     if isinstance(pred_instances, list):
