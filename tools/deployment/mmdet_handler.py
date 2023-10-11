@@ -29,7 +29,7 @@ class MMdetHandler(BaseHandler):
         self.config_file = os.path.join(model_dir, 'config.py')
 
         self.model = init_detector(self.config_file, checkpoint, self.device)
-        #self.model.half()
+        self.model.half()
 
         self.initialized = True
 
@@ -59,21 +59,21 @@ class MMdetHandler(BaseHandler):
                                                     data,
                                                     slide_size=(1792, 1792),
                                                     chip_size=(2048, 2048))
-
-                results = [results]
                 print(results)
             # small drawings
             else:
                 results = inference_detector(self.model, data)
                 print(results)
                 results = pred_to_array(results)
+        results = [results]
         print(results)
         return results
 
     def postprocess(self, data):
         output = []
-
+        print("Length data: ", len(data))
         for image_index, image_result in enumerate(data):
+            print("image_index", image_index)
             output.append([])
             if isinstance(image_result, tuple):
                 bbox_result, segm_result = image_result
@@ -81,8 +81,12 @@ class MMdetHandler(BaseHandler):
                 bbox_result, segm_result = image_result, None
 
             for class_index, class_result in enumerate(bbox_result):
-                class_name = self.model.dataset_meta['classes']
+                print("class_index", class_index)
+                print("class_result", class_result)
+                class_name = self.model.dataset_meta['classes'][class_index]
+                print(class_name)
                 for bbox in class_result:
+                    print(bbox)
                     bbox_coords = bbox[:-1].tolist()
                     score = float(bbox[-1])
 
