@@ -23,7 +23,7 @@ __all__ = [
     'setup_multi_processes', 'get_caller_name', 'log_img_scale', 'compat_cfg',
     'split_batch', 'register_all_modules', 'replace_cfg_vals', 'AvoidOOM',
     'AvoidCUDAOOM', 'all_reduce_dict', 'allreduce_grads', 'reduce_mean',
-    'sync_random_seed', 'ConfigType', 'InstanceList', 'MultiConfig',
+    'sync_random_seed', 'ConfigType', 'InstanceList', 'MultiConfig', 'nms',
     'OptConfigType', 'OptInstanceList', 'OptMultiConfig', 'OptPixelList',
     'PixelList', 'RangeType', 'get_test_pipeline_cfg', 'nms', 'delete_border_detections',
     'setup_cache_size_limit_of_dynamo', 'imshow_mot_errors', 'pred_to_array'

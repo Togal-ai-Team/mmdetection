@@ -1,0 +1,3 @@
+ml_objects:
+python mmdet2torchserve.py ml_objects/config.py ml_objects/best_bbox_mAP_epoch_28.pth --output-folder ml_objects --model-name ml_objects -f
+
