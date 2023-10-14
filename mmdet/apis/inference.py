@@ -20,7 +20,7 @@ from mmdet.utils import ConfigType
 from ..evaluation import get_classes
 from ..registry import MODELS
 from ..structures import DetDataSample, SampleList
-from ..utils import get_test_pipeline_cfg, pred_to_array, delete_border_detections
+from ..utils import get_test_pipeline_cfg, pred_to_array, delete_border_detections, nms
 
 
 def init_detector(
