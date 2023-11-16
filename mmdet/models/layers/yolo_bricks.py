@@ -13,7 +13,7 @@ from mmengine.model import BaseModule
 from mmengine.utils import digit_version
 from torch import Tensor
 
-from mmyolo.registry import MODELS
+from mmdet.registry import MODELS
 
 if digit_version(torch.__version__) >= digit_version('1.7.0'):
     MODELS.register_module(module=nn.SiLU, name='SiLU')

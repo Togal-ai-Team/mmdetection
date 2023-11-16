@@ -7,7 +7,7 @@ from mmcv.cnn import ConvModule, DepthwiseSeparableConvModule
 from mmdet.models.backbones.csp_darknet import CSPLayer, Focus
 from mmdet.utils import ConfigType, OptMultiConfig
 
-from mmyolo.registry import MODELS
+from mmdet.registry import MODELS
 from ..layers import CSPLayerWithTwoConv, SPPFBottleneck
 from ..utils import make_divisible_mmyolo, make_round_mmyolo
 from .base_backbone import BaseBackbone
