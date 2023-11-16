@@ -16,6 +16,16 @@ from mmdet.structures.bbox import BaseBoxes, get_box_type, stack_boxes
 from mmdet.structures.mask import BitmapMasks, PolygonMasks
 from mmdet.utils import OptInstanceList
 
+def make_divisible_mmyolo(x: float,
+                   widen_factor: float = 1.0,
+                   divisor: int = 8) -> int:
+    """Make sure that x*widen_factor is divisible by divisor."""
+    return math.ceil(x * widen_factor / divisor) * divisor
+
+
+def make_round_mmyolo(x: float, deepen_factor: float = 1.0) -> int:
+    """Make sure that x*deepen_factor becomes an integer not less than 1."""
+    return max(round(x * deepen_factor), 1) if x > 1 else x
 
 class SigmoidGeometricMean(Function):
     """Forward and backward function of geometric mean of two sigmoid

@@ -37,7 +37,12 @@ from .transformer import (MLP, AdaptivePadding, CdnQueryGenerator,
                           Mask2FormerTransformerEncoder, PatchEmbed,
                           PatchMerging, coordinate_to_encoding,
                           inverse_sigmoid, nchw_to_nlc, nlc_to_nchw)
-
+from .yolo_bricks import (BepC3StageBlock, BiFusion, CSPLayerWithTwoConv,
+                          DarknetBottleneck, EELANBlock, EffectiveSELayer,
+                          ELANBlock, ImplicitA, ImplicitM,
+                          MaxPoolAndStrideConvBlock, PPYOLOEBasicBlock,
+                          RepStageBlock, RepVGGBlock, SPPFBottleneck,
+                          SPPFCSPBlock, TinyDownSampleBlock)
 # yapf: enable
 
 __all__ = [
@@ -61,5 +66,10 @@ __all__ = [
     'ConditionalDetrTransformerDecoderLayer', 'DinoTransformerDecoder',
     'CdnQueryGenerator', 'Mask2FormerTransformerEncoder',
     'Mask2FormerTransformerDecoderLayer', 'Mask2FormerTransformerDecoder',
-    'SinePositionalEncoding3D', 'FrozenBatchNorm2d'
+    'SinePositionalEncoding3D', 'FrozenBatchNorm2d', 'SPPFBottleneck',
+    'RepVGGBlock', 'RepStageBlock', 'ExpMomentumEMA',
+    'ELANBlock', 'MaxPoolAndStrideConvBlock', 'SPPFCSPBlock',
+    'PPYOLOEBasicBlock', 'EffectiveSELayer', 'TinyDownSampleBlock',
+    'EELANBlock', 'ImplicitA', 'ImplicitM', 'BepC3StageBlock',
+    'CSPLayerWithTwoConv', 'DarknetBottleneck', 'BiFusion'
 ]
