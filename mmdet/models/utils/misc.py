@@ -3,6 +3,7 @@ from functools import partial
 from typing import List, Optional, Sequence, Tuple, Union
 
 import numpy as np
+import math
 import torch
 from mmengine.structures import InstanceData
 from mmengine.utils import digit_version
