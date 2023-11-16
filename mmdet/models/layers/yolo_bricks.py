@@ -15,21 +15,6 @@ from torch import Tensor
 
 from mmdet.registry import MODELS
 
-if digit_version(torch.__version__) >= digit_version('1.7.0'):
-    MODELS.register_module(module=nn.SiLU, name='SiLU')
-else:
-
-    class SiLU(nn.Module):
-        """Sigmoid Weighted Liner Unit."""
-
-        def __init__(self, inplace=True):
-            super().__init__()
-
-        def forward(self, inputs) -> Tensor:
-            return inputs * torch.sigmoid(inputs)
-
-    MODELS.register_module(module=SiLU, name='SiLU')
-
 
 class SPPFBottleneck(BaseModule):
     """Spatial pyramid pooling - Fast (SPPF) layer for
